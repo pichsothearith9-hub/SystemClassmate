@@ -1,0 +1,1333 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <title>Classmate Hub</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Inter:wght@400;500;600&family=Noto+Sans+Khmer:wght@400;600&display=swap">
+    <style>
+        /* Layout: one column register on phones with a bottom tab bar; left rail from 900px up. Ink-blue on cool paper, one amber highlighter for "today". */
+        :root {
+            --bg: #F2F5F8;
+            --surface: #FFFFFF;
+            --surface2: #E8EDF2;
+            --ink: #12202C;
+            --ink2: #4A5B6A;
+            --line: #D3DCE4;
+            --accent: #1B6E8A;
+            --accent-ink: #FFFFFF;
+            --accent-soft: #D9ECF3;
+            --mark: #F2B632;
+            --good: #1E8A5A;
+            --good-soft: #DDF3E8;
+            --warn: #9A6411;
+            --warn-soft: #FBF0D5;
+            --bad: #C23B3B;
+            --bad-soft: #FBE3E3;
+            --av-bg-l: 88%;
+            --av-fg-l: 28%;
+            color-scheme: light;
+            --font-display: 'Bricolage Grotesque', 'Noto Sans Khmer', system-ui, sans-serif;
+            --font-body: Inter, 'Noto Sans Khmer', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #0E1820;
+                --surface: #15232E;
+                --surface2: #1C2E3B;
+                --ink: #E8EFF4;
+                --ink2: #9FB2C1;
+                --line: #2A3E4D;
+                --accent: #5CB8D6;
+                --accent-ink: #08222C;
+                --accent-soft: #17384A;
+                --mark: #E8B54A;
+                --good: #4CC38A;
+                --good-soft: #12372A;
+                --warn: #E8B54A;
+                --warn-soft: #3A2E12;
+                --bad: #EF7A7A;
+                --bad-soft: #3F1F22;
+                --av-bg-l: 24%;
+                --av-fg-l: 85%;
+                color-scheme: dark;
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #0E1820;
+            --surface: #15232E;
+            --surface2: #1C2E3B;
+            --ink: #E8EFF4;
+            --ink2: #9FB2C1;
+            --line: #2A3E4D;
+            --accent: #5CB8D6;
+            --accent-ink: #08222C;
+            --accent-soft: #17384A;
+            --mark: #E8B54A;
+            --good: #4CC38A;
+            --good-soft: #12372A;
+            --warn: #E8B54A;
+            --warn-soft: #3A2E12;
+            --bad: #EF7A7A;
+            --bad-soft: #3F1F22;
+            --av-bg-l: 24%;
+            --av-fg-l: 85%;
+            color-scheme: dark;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        [hidden] {
+            display: none !important
+        }
+
+        img {
+            max-width: 100%
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 15px/1.5 var(--font-body);
+            padding-block: 0 96px;
+            padding-left: max(16px, env(safe-area-inset-left, 0px));
+            padding-right: max(16px, env(safe-area-inset-right, 0px));
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0 0 auto;
+            height: env(safe-area-inset-top, 0px);
+            background: var(--bg);
+            z-index: 10
+        }
+
+        button {
+            font: inherit;
+            color: inherit;
+            cursor: pointer
+        }
+
+        h1,
+        h2,
+        h3,
+        p {
+            margin: 0
+        }
+
+        .app {
+            max-width: 760px;
+            margin: 0 auto
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px
+        }
+
+        /* header */
+        .top {
+            position: sticky;
+            top: env(safe-area-inset-top, 0px);
+            z-index: 9;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-block: 12px 10px
+        }
+
+        .top .who {
+            min-width: 0
+        }
+
+        .eyebrow {
+            font-size: 11px;
+            letter-spacing: .09em;
+            text-transform: uppercase;
+            color: var(--ink2);
+            font-weight: 600
+        }
+
+        .cname {
+            background: none;
+            border: 0;
+            padding: 0;
+            text-align: left;
+            font: 700 22px/1.2 var(--font-display);
+            color: var(--ink);
+            overflow-wrap: anywhere
+        }
+
+        .sync {
+            flex: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 34px;
+            padding: 0 12px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--surface);
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--ink2)
+        }
+
+        .sync i {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ink2)
+        }
+
+        .sync.good i {
+            background: var(--good)
+        }
+
+        .sync.warn i {
+            background: var(--mark)
+        }
+
+        .sync.bad i {
+            background: var(--bad)
+        }
+
+        /* tab bar */
+        .tabbar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 20;
+            background: var(--surface);
+            border-top: 1px solid var(--line);
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 2px;
+            padding: 6px max(6px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px))
+        }
+
+        .tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            min-height: 50px;
+            border-radius: 12px;
+            color: var(--ink2);
+            text-decoration: none;
+            font-size: 10.5px;
+            font-weight: 600;
+            min-width: 0
+        }
+
+        .tab svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round
+        }
+
+        .tab[aria-current="page"] {
+            color: var(--accent);
+            background: var(--accent-soft)
+        }
+
+        /* headings and blocks */
+        .vhead {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 12px;
+            margin: 10px 0 14px;
+            flex-wrap: wrap
+        }
+
+        h2 {
+            font: 700 26px/1.15 var(--font-display);
+            text-wrap: balance
+        }
+
+        h3 {
+            font: 700 15px/1.3 var(--font-display);
+            margin-bottom: 8px
+        }
+
+        .sec {
+            margin-top: 22px
+        }
+
+        .sec-h {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 8px
+        }
+
+        .sec-h h3 {
+            margin: 0
+        }
+
+        .sub {
+            display: block;
+            font-size: 13px;
+            color: var(--ink2)
+        }
+
+        .muted {
+            color: var(--ink2)
+        }
+
+        .list {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            overflow: hidden
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            min-height: 60px;
+            padding: 10px 14px;
+            background: none;
+            border: 0;
+            border-top: 1px solid var(--line);
+            text-align: left
+        }
+
+        .list>:first-child {
+            border-top: 0
+        }
+
+        button.row:hover {
+            background: var(--surface2)
+        }
+
+        .grow {
+            flex: 1;
+            min-width: 0
+        }
+
+        .nm {
+            display: block;
+            font-weight: 600;
+            overflow-wrap: anywhere
+        }
+
+        .meta {
+            display: flex;
+            gap: 6px;
+            flex: none;
+            flex-wrap: wrap;
+            justify-content: flex-end
+        }
+
+        .row.off {
+            opacity: .6
+        }
+
+        .av {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            flex: none;
+            display: grid;
+            place-items: center;
+            font: 700 14px var(--font-display);
+            background: hsl(var(--h) 55% var(--av-bg-l));
+            color: hsl(var(--h) 55% var(--av-fg-l))
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 24px;
+            padding: 0 9px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            background: var(--surface2);
+            color: var(--ink2);
+            white-space: nowrap
+        }
+
+        .pill.good {
+            background: var(--good-soft);
+            color: var(--good)
+        }
+
+        .pill.warn {
+            background: var(--warn-soft);
+            color: var(--warn)
+        }
+
+        .pill.bad {
+            background: var(--bad-soft);
+            color: var(--bad)
+        }
+
+        .pill.info {
+            background: var(--accent-soft);
+            color: var(--accent)
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 44px;
+            padding: 0 16px;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            background: var(--surface);
+            color: var(--ink);
+            font-weight: 600;
+            font-size: 14px
+        }
+
+        .btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--accent-ink)
+        }
+
+        .btn.danger {
+            color: var(--bad);
+            border-color: var(--bad)
+        }
+
+        .btn.danger.armed {
+            background: var(--bad);
+            color: #fff
+        }
+
+        .btn.small {
+            min-height: 36px;
+            padding: 0 12px;
+            font-size: 13px
+        }
+
+        .btn[disabled] {
+            opacity: .5;
+            cursor: not-allowed
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        .tiles {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px
+        }
+
+        .tile {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 12px;
+            min-width: 0
+        }
+
+        .tile b {
+            display: block;
+            font: 700 28px/1.1 var(--font-display);
+            font-variant-numeric: tabular-nums
+        }
+
+        .tile span {
+            display: block;
+            font-size: 12px;
+            color: var(--ink2);
+            margin-top: 4px;
+            line-height: 1.3
+        }
+
+        .note {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            background: var(--warn-soft);
+            color: var(--ink);
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            font-size: 14px
+        }
+
+        .note span {
+            flex: 1;
+            min-width: 200px
+        }
+
+        .empty {
+            border: 1.5px dashed var(--line);
+            border-radius: 16px;
+            padding: 28px 18px;
+            text-align: center;
+            display: grid;
+            gap: 14px;
+            justify-items: center
+        }
+
+        .empty p {
+            max-width: 34ch;
+            color: var(--ink2)
+        }
+
+        .empty h3 {
+            font-size: 18px;
+            margin: 0
+        }
+
+        .chips {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+            scrollbar-width: none
+        }
+
+        .chip {
+            flex: none;
+            min-height: 36px;
+            padding: 0 14px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--surface);
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .chip[aria-pressed="true"] {
+            background: var(--ink);
+            color: var(--bg);
+            border-color: var(--ink)
+        }
+
+        /* forms */
+        .field {
+            display: grid;
+            gap: 6px;
+            margin-bottom: 12px
+        }
+
+        .field label,
+        .field .lbl {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--ink2)
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            min-height: 44px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--ink);
+            padding: 10px 12px;
+            font: 16px/1.3 var(--font-body)
+        }
+
+        textarea {
+            min-height: 72px;
+            resize: vertical
+        }
+
+        input[aria-invalid="true"] {
+            border-color: var(--bad)
+        }
+
+        .two {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px
+        }
+
+        .check {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 48px;
+            padding: 6px 14px;
+            border-top: 1px solid var(--line);
+            font-weight: 500
+        }
+
+        .check input {
+            width: 22px;
+            height: 22px;
+            min-height: 0;
+            flex: none;
+            accent-color: var(--accent)
+        }
+
+        .search {
+            margin-bottom: 10px
+        }
+
+        /* attendance */
+        .datebar {
+            display: grid;
+            grid-template-columns: 44px 1fr 44px;
+            gap: 8px;
+            margin-bottom: 12px
+        }
+
+        .datebar .btn {
+            padding: 0
+        }
+
+        .counts {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 12px
+        }
+
+        .arow {
+            padding: 12px 14px;
+            border-top: 1px solid var(--line);
+            display: grid;
+            gap: 8px
+        }
+
+        .list>.arow:first-child {
+            border-top: 0
+        }
+
+        .arow .top2 {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .seg {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px
+        }
+
+        .seg button {
+            min-height: 42px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--ink2);
+            font-weight: 600;
+            font-size: 13px;
+            padding: 0 2px
+        }
+
+        .seg button[aria-pressed="true"] {
+            border-color: currentColor
+        }
+
+        .seg .P[aria-pressed="true"] {
+            background: var(--good-soft);
+            color: var(--good)
+        }
+
+        .seg .L[aria-pressed="true"] {
+            background: var(--warn-soft);
+            color: var(--warn)
+        }
+
+        .seg .A[aria-pressed="true"] {
+            background: var(--bad-soft);
+            color: var(--bad)
+        }
+
+        .seg .E[aria-pressed="true"] {
+            background: var(--accent-soft);
+            color: var(--accent)
+        }
+
+        /* grades */
+        .score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: none
+        }
+
+        .score input {
+            width: 84px;
+            text-align: right;
+            font-variant-numeric: tabular-nums
+        }
+
+        .score span {
+            font-size: 13px;
+            color: var(--ink2);
+            white-space: nowrap
+        }
+
+        /* groups, events */
+        .members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 0 14px 14px
+        }
+
+        .ghead {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px
+        }
+
+        .dt {
+            width: 46px;
+            flex: none;
+            text-align: center;
+            border-radius: 10px;
+            background: var(--surface2);
+            padding: 4px 0;
+            line-height: 1.1
+        }
+
+        .dt b {
+            display: block;
+            font: 700 18px var(--font-display)
+        }
+
+        .dt span {
+            font-size: 10px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--ink2);
+            font-weight: 600
+        }
+
+        .dt.today {
+            background: var(--mark);
+            color: #1b1400
+        }
+
+        .dt.today span {
+            color: #1b1400
+        }
+
+        .row.done .nm {
+            text-decoration: line-through;
+            color: var(--ink2)
+        }
+
+        .tick {
+            width: 44px;
+            height: 44px;
+            flex: none;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            background: var(--surface);
+            color: var(--accent)
+        }
+
+        .tick svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round
+        }
+
+        /* sheet and toast */
+        .sheet-wrap {
+            position: fixed;
+            inset: 0;
+            z-index: 40;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center
+        }
+
+        .scrim {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 16, 24, .55)
+        }
+
+        .sheet {
+            position: relative;
+            width: 100%;
+            max-width: 560px;
+            max-height: 92dvh;
+            overflow: auto;
+            background: var(--bg);
+            border-radius: 20px 20px 0 0;
+            padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+            border: 1px solid var(--line)
+        }
+
+        .sheet h2 {
+            font-size: 22px;
+            margin-bottom: 14px
+        }
+
+        .sheet .actions {
+            margin-top: 6px
+        }
+
+        .sheet .actions .grow-btn {
+            flex: 1
+        }
+
+        .statline {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 14px
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+            background: var(--ink);
+            color: var(--bg);
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 60;
+            max-width: calc(100% - 32px);
+            text-align: center
+        }
+
+        @media (prefers-reduced-motion:no-preference) {
+            .sheet {
+                animation: up .18s ease-out
+            }
+
+            @keyframes up {
+                from {
+                    transform: translateY(24px);
+                    opacity: .6
+                }
+
+                to {
+                    transform: none;
+                    opacity: 1
+                }
+            }
+        }
+
+        @media (min-width:720px) {
+            .sheet-wrap {
+                align-items: center
+            }
+
+            .sheet {
+                border-radius: 20px;
+                max-height: 86dvh
+            }
+
+            .toast {
+                bottom: 28px
+            }
+        }
+
+        @media (min-width:900px) {
+            body {
+                padding-left: calc(112px + env(safe-area-inset-left, 0px));
+                padding-block: 0 40px
+            }
+
+            .tabbar {
+                top: 0;
+                right: auto;
+                bottom: 0;
+                width: 92px;
+                grid-template-columns: 1fr;
+                grid-auto-rows: 62px;
+                align-content: start;
+                border-top: 0;
+                border-right: 1px solid var(--line);
+                padding: calc(14px + env(safe-area-inset-top, 0px)) 8px 14px max(8px, env(safe-area-inset-left, 0px))
+            }
+
+            .app {
+                margin: 0 auto
+            }
+
+            .toast {
+                bottom: 28px
+            }
+        }
+
+        @media (max-width:380px) {
+            .tiles {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .tab {
+                font-size: 10px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <header class="top">
+            <div class="who">
+                <div class="eyebrow">Class register</div>
+                <button class="cname" id="cname" data-act="rename-class"></button>
+            </div>
+            <button class="sync warn" id="sync" data-act="retry-save"><i></i><span>Loading</span></button>
+        </header>
+        <main id="view" aria-live="polite"></main>
+    </div>
+    <nav class="tabbar" id="tabs" aria-label="Sections"></nav>
+    <div class="sheet-wrap" id="sheet" hidden>
+        <div class="scrim" data-act="close-sheet"></div>
+        <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" id="sheet-body"></div>
+    </div>
+    <div class="toast" id="toast" role="status" hidden></div>
+
+    <script>
+        (function () {
+            'use strict';
+            var LS_KEY = 'classmate-hub-v1';
+            var $ = function (s, r) { return (r || document).querySelector(s) };
+            var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] }) };
+            var uid = function () { return Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3) };
+            var pad = function (n) { return String(n).padStart(2, '0') };
+            var ymd = function (d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) };
+            var todayStr = function () { return ymd(new Date()) };
+            var parseYmd = function (s) { var p = String(s).split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]) };
+            var addDays = function (s, n) { var d = parseYmd(s); d.setDate(d.getDate() + n); return ymd(d) };
+            var fmtDate = function (s, o) { if (!s) return ''; try { return parseYmd(s).toLocaleDateString(undefined, o || { day: 'numeric', month: 'short', year: 'numeric' }) } catch (e) { return s } };
+            var diffDays = function (a, b) { return Math.round((parseYmd(a) - parseYmd(b)) / 864e5) };
+
+            /* ---------- state ---------- */
+            function blank() { return { v: 1, className: 'My class', students: [], attendance: {}, assessments: [], scores: {}, groups: [], events: [], sample: false } }
+            function normalize(d) {
+                var b = blank(); d = d || {}; for (var k in b) { if (d[k] !== undefined && d[k] !== null) b[k] = d[k] }
+                ['students', 'assessments', 'groups', 'events'].forEach(function (k) { if (!Array.isArray(b[k])) b[k] = [] });
+                ['attendance', 'scores'].forEach(function (k) { if (typeof b[k] !== 'object' || Array.isArray(b[k])) b[k] = {} });
+                return b
+            }
+            var S = blank();
+            try { var raw = localStorage.getItem(LS_KEY); if (raw) S = normalize(JSON.parse(raw)) } catch (e) { }
+
+            var db = null, ref = null, dl = null, ro = false, dirty = false, saving = false, timer = null, status = 'loading', loadTimer = null;
+            var q = '', gf = 'all', attDate = todayStr(), gradeId = '';
+
+            /* ---------- derived ---------- */
+            var act = function () { return S.students.filter(function (s) { return s.active !== false }) };
+            var byName = function (a, b) { return a.name.localeCompare(b.name) };
+            var stu = function (id) { return S.students.find(function (s) { return s.id === id }) };
+            var grp = function (id) { return S.groups.find(function (g) { return g.id === id }) };
+            function attRate(id) { var a = 0, x = 0; for (var d in S.attendance) { var v = S.attendance[d][id]; if (v === 'P' || v === 'L') a++; else if (v === 'A') x++ } return a + x ? Math.round(a / (a + x) * 100) : null }
+            function avgOf(id) { var sum = 0, n = 0; S.assessments.forEach(function (a) { var v = (S.scores[a.id] || {})[id]; if (typeof v === 'number' && a.max > 0) { sum += v / a.max * 100; n++ } }); return n ? sum / n : null }
+            var tone = function (p) { return p >= 75 ? 'good' : p >= 50 ? 'warn' : 'bad' };
+            var pctPill = function (p, label) { return p == null ? '' : '<span class="pill ' + tone(p) + '">' + (label || '') + Math.round(p) + '%</span>' };
+            function hue(s) { var h = 0; for (var i = 0; i < s.length; i++)h = (h * 31 + s.charCodeAt(i)) % 360; return h }
+            function initials(n) { var w = String(n).trim().split(/\s+/).filter(Boolean); var a = w.slice(0, 2).map(function (x) { return Array.from(x)[0] || '' }).join(''); return esc(a.toUpperCase()) }
+            function avatar(s) { return '<span class="av" style="--h:' + hue(s.name) + '" aria-hidden="true">' + initials(s.name) + '</span>' }
+            function nextSid() { var y = new Date().getFullYear(); var n = S.students.length + 1; var id; do { id = y + '-' + String(n).padStart(3, '0'); n++ } while (S.students.some(function (s) { return s.sid === id })); return id }
+
+            /* ---------- persistence ---------- */
+            var ST = { loading: ['Loading', 'warn'], synced: ['Saved', 'good'], saving: ['Saving', 'warn'], local: ['On this device', 'warn'], ro: ['View only', 'mute'], error: ['Not saved, tap to retry', 'bad'] };
+            function setStatus(s) {
+                status = s; var el = $('#sync'); if (!el) return; var t = ST[s]; el.className = 'sync ' + t[1]; el.querySelector('span').textContent = t[0];
+                el.title = s === 'local' ? 'Saved in this browser. The shared store is not reachable yet.' : s === 'ro' ? 'You can look but not change this class.' : ''
+            }
+            function cacheLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(S)) } catch (e) { } }
+            function touch() { dirty = true; cacheLocal(); clearTimeout(timer); timer = setTimeout(flush, 700); if (!ref) setStatus('local'); else setStatus('saving') }
+            async function flush() {
+                if (saving || !dirty) return;
+                if (!ref) { dirty = false; setStatus('local'); return }
+                saving = true; dirty = false; setStatus('saving'); var failed = false;
+                try { await ref.set(JSON.parse(JSON.stringify(S))); setStatus('synced') }
+                catch (e) { failed = true; dirty = true; if (e && e.code === 'invalid_argument') { ro = true; dirty = false; setStatus('ro'); toast('You can view this class but not change it.'); render() } else setStatus('error') }
+                finally { saving = false; if (dirty && !failed) timer = setTimeout(flush, 300) }
+            }
+            function mutate(fn) { if (ro) { toast('View only: you cannot change this class.'); return false } fn(); touch(); return true }
+
+            async function boot() {
+                render();
+                if (!(window.claude && window.claude.use)) { setStatus('local'); return }
+                var user = null;
+                try { user = await window.claude.use('user') } catch (e) { }
+                try { db = await window.claude.use('db') } catch (e) { }
+                try { dl = await window.claude.use('downloads') } catch (e) { }
+                try { if (user && user.can && user.can('data.write') === false) ro = true } catch (e) { }
+                if (!db) { setStatus(ro ? 'ro' : 'local'); render(); return }
+                ref = db.doc('app/classroom');
+                loadTimer = setTimeout(function () { if (status === 'loading') setStatus('local') }, 10000);
+                ref.onSnapshot(function (snap) {
+                    if (!snap.metadata.fromCache) clearTimeout(loadTimer);
+                    if (snap.exists) {
+                        if (!dirty && !saving) {
+                            var r = normalize(snap.data());
+                            if (JSON.stringify(r) !== JSON.stringify(S)) { S = r; cacheLocal(); var ae = document.activeElement; if (!(ae && ae.closest && ae.closest('#view') && /INPUT|TEXTAREA|SELECT/.test(ae.tagName))) render() }
+                        }
+                        if (!snap.metadata.fromCache && !dirty && !saving) setStatus(ro ? 'ro' : 'synced');
+                    } else if (!snap.metadata.fromCache) {
+                        if (!ro && (S.students.length || S.events.length || S.assessments.length)) { touch() } else setStatus(ro ? 'ro' : 'synced');
+                    }
+                }, function (err) { clearTimeout(loadTimer); ref = null; setStatus(ro ? 'ro' : 'local') });
+            }
+
+            /* ---------- ui helpers ---------- */
+            var toastT;
+            function toast(msg) { var t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { t.hidden = true }, 2400) }
+            var lastFocus = null;
+            function openSheet(html) { armed = null; lastFocus = document.activeElement; $('#sheet-body').innerHTML = html; $('#sheet').hidden = false; var f = $('#sheet-body input:not([type=checkbox]),#sheet-body select,#sheet-body button'); if (f && matchMedia('(pointer:fine)').matches) f.focus() }
+            function closeSheet() { $('#sheet').hidden = true; $('#sheet-body').innerHTML = ''; if (lastFocus && lastFocus.focus && document.contains(lastFocus)) lastFocus.focus() }
+            var ICON = {
+                home: '<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+                students: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14c2.8 0 4.5 1.9 4.5 5"/>',
+                attendance: '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 12.5l3 3 5-6"/>',
+                grades: '<path d="M5 20V10M12 20V4M19 20v-7"/>',
+                groups: '<circle cx="12" cy="7" r="3"/><circle cx="5.5" cy="17" r="2.5"/><circle cx="18.5" cy="17" r="2.5"/><path d="M10 10l-3 5M14 10l3 5"/>',
+                events: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'
+            };
+            var TABS = [['home', 'Home'], ['students', 'Students'], ['attendance', 'Attend'], ['grades', 'Grades'], ['groups', 'Groups'], ['events', 'Events']];
+            function renderTabs(cur) { $('#tabs').innerHTML = TABS.map(function (t) { return '<a class="tab" href="#' + t[0] + '"' + (t[0] === cur ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" aria-hidden="true">' + ICON[t[0]] + '</svg><span>' + t[1] + '</span></a>' }).join('') }
+            function empty(title, text, btns) { return '<div class="empty"><h3>' + title + '</h3><p>' + text + '</p><div class="actions">' + btns + '</div></div>' }
+
+            /* ---------- views ---------- */
+            function viewHome() {
+                var a = act(), h = '';
+                if (S.sample) h += '<div class="note"><span>You are looking at sample classmates. Clear them when you are ready to add your own.</span><button class="btn small" data-act="clear-sample">Clear sample</button></div>';
+                h += '<div class="vhead"><h2>Today, ' + esc(fmtDate(todayStr(), { weekday: 'long', day: 'numeric', month: 'short' })) + '</h2></div>';
+                if (!S.students.length) {
+                    return h + empty('No classmates yet', 'Add your first classmate, or load a few sample names to see how attendance, grades and groups fit together.', '<button class="btn primary" data-act="new-student">Add classmate</button><button class="btn" data-act="load-sample">Load sample class</button>');
+                }
+                var rec = S.attendance[todayStr()] || {}, marked = a.filter(function (s) { return rec[s.id] }).length;
+                var here = a.filter(function (s) { return rec[s.id] === 'P' || rec[s.id] === 'L' }).length;
+                var avgs = a.map(function (s) { return avgOf(s.id) }).filter(function (v) { return v != null });
+                var cavg = avgs.length ? Math.round(avgs.reduce(function (x, y) { return x + y }, 0) / avgs.length) : null;
+                h += '<div class="tiles">'
+                    + '<div class="tile"><b>' + a.length + '</b><span>Classmates enrolled</span></div>'
+                    + '<div class="tile"><b>' + (marked ? here + '/' + marked : '-') + '</b><span>' + (marked ? 'Here today' : 'Attendance not taken') + '</span></div>'
+                    + '<div class="tile"><b>' + (cavg == null ? '-' : cavg + '%') + '</b><span>Class average</span></div></div>';
+                if (!marked) h += '<div class="actions" style="margin-top:12px"><a class="btn primary" href="#attendance" style="text-decoration:none">Take attendance</a></div>';
+                var td = todayStr();
+                var ev = S.events.filter(function (e) { return !e.done && e.date >= td }).sort(function (x, y) { return x.date.localeCompare(y.date) }).slice(0, 3);
+                h += '<section class="sec"><div class="sec-h"><h3>Coming up</h3><a href="#events" class="muted">All events</a></div>';
+                h += ev.length ? '<div class="list">' + ev.map(eventRow).join('') + '</div>' : '<p class="muted">Nothing scheduled. Add an exam or assignment in Events.</p>';
+                h += '</section>';
+                var need = a.map(function (s) { var r = attRate(s.id), v = avgOf(s.id), why = []; if (r != null && r < 80) why.push('Attendance ' + r + '%'); if (v != null && v < 50) why.push('Average ' + Math.round(v) + '%'); return { s: s, why: why } }).filter(function (x) { return x.why.length });
+                if (need.length) { h += '<section class="sec"><div class="sec-h"><h3>Needs attention</h3></div><div class="list">' + need.map(function (x) { return '<button class="row" data-act="open-student" data-id="' + x.s.id + '">' + avatar(x.s) + '<span class="grow"><span class="nm">' + esc(x.s.name) + '</span><span class="sub">' + esc(x.why.join(' · ')) + '</span></span></button>' }).join('') + '</div></section>' }
+                var top = a.map(function (s) { return { s: s, v: avgOf(s.id) } }).filter(function (x) { return x.v != null }).sort(function (x, y) { return y.v - x.v }).slice(0, 3);
+                if (top.length) { h += '<section class="sec"><div class="sec-h"><h3>Top of the class</h3></div><div class="list">' + top.map(function (x, i) { return '<button class="row" data-act="open-student" data-id="' + x.s.id + '">' + avatar(x.s) + '<span class="grow"><span class="nm">' + (i + 1) + '. ' + esc(x.s.name) + '</span></span>' + pctPill(x.v) + '</button>' }).join('') + '</div></section>' }
+                var mo = new Date().getMonth();
+                var bd = a.filter(function (s) { return s.birthday && parseYmd(s.birthday).getMonth() === mo }).sort(function (x, y) { return parseYmd(x.birthday).getDate() - parseYmd(y.birthday).getDate() });
+                if (bd.length) { h += '<section class="sec"><div class="sec-h"><h3>Birthdays this month</h3></div><div class="list">' + bd.map(function (s) { return '<div class="row">' + avatar(s) + '<span class="grow"><span class="nm">' + esc(s.name) + '</span></span><span class="pill info">' + esc(fmtDate(s.birthday, { day: 'numeric', month: 'short' })) + '</span></div>' }).join('') + '</div></section>' }
+                if (dl) { h += '<section class="sec"><div class="sec-h"><h3>Export</h3></div><p class="muted" style="margin-bottom:10px">Save a spreadsheet file (CSV) that opens in Excel or Google Sheets.</p><div class="actions"><button class="btn small" data-act="export" data-k="students">Classmates</button><button class="btn small" data-act="export" data-k="attendance">Attendance</button><button class="btn small" data-act="export" data-k="grades">Grades</button></div></section>' }
+                return h;
+            }
+
+            function studentRows() {
+                var l = S.students.slice().sort(byName).filter(function (s) {
+                    if (gf !== 'all' && s.groupId !== gf) return false;
+                    if (!q) return true; var t = q.toLowerCase(); return (s.name + ' ' + (s.sid || '') + ' ' + (s.phone || '')).toLowerCase().indexOf(t) > -1
+                });
+                if (!l.length) return '<div class="row"><span class="muted">No classmates match.</span></div>';
+                return l.map(function (s) {
+                    var g = grp(s.groupId), r = attRate(s.id), v = avgOf(s.id);
+                    return '<button class="row' + (s.active === false ? ' off' : '') + '" data-act="open-student" data-id="' + s.id + '">' + avatar(s) + '<span class="grow"><span class="nm">' + esc(s.name) + '</span><span class="sub">' + esc(s.sid || '') + (g ? ' · ' + esc(g.name) : '') + '</span></span><span class="meta">' + (s.active === false ? '<span class="pill">Left</span>' : (r != null ? '<span class="pill ' + tone(r) + '" title="Attendance">' + r + '%</span>' : '') + (v != null ? pctPill(v) : '')) + '</span></button>'
+                }).join('');
+            }
+            function viewStudents() {
+                var h = '<div class="vhead"><h2>Classmates <span class="muted" style="font:500 16px var(--font-body)">' + S.students.length + '</span></h2><button class="btn primary" data-act="new-student">Add</button></div>';
+                if (!S.students.length) return h + empty('No classmates yet', 'Add them one by one, or load sample names to try the app first.', '<button class="btn primary" data-act="new-student">Add classmate</button><button class="btn" data-act="load-sample">Load sample class</button>');
+                h += '<div class="search"><label class="eyebrow" for="q" style="display:block;margin-bottom:6px">Search</label><input id="q" type="search" placeholder="Name, ID or phone" value="' + esc(q) + '" autocomplete="off"></div>';
+                if (S.groups.length) { h += '<div class="chips" role="group" aria-label="Filter by group"><button class="chip" data-act="filter-group" data-id="all" aria-pressed="' + (gf === 'all') + '">All</button>' + S.groups.map(function (g) { return '<button class="chip" data-act="filter-group" data-id="' + g.id + '" aria-pressed="' + (gf === g.id) + '">' + esc(g.name) + '</button>' }).join('') + '</div>' }
+                return h + '<div class="list" id="slist">' + studentRows() + '</div>';
+            }
+
+            function viewAttendance() {
+                var h = '<div class="vhead"><h2>Attendance</h2></div>';
+                var a = act().sort(byName);
+                if (!a.length) return h + empty('No one to mark yet', 'Add classmates first, then come back here each day.', '<button class="btn primary" data-act="new-student">Add classmate</button><button class="btn" data-act="load-sample">Load sample class</button>');
+                var rec = S.attendance[attDate] || {}, c = { P: 0, L: 0, A: 0, E: 0, U: 0 };
+                a.forEach(function (s) { var v = rec[s.id]; if (v) c[v]++; else c.U++ });
+                h += '<div class="datebar"><button class="btn" data-act="att-day" data-d="-1" aria-label="Previous day">&lsaquo;</button><input id="att-date" type="date" value="' + attDate + '" aria-label="Date"><button class="btn" data-act="att-day" data-d="1" aria-label="Next day">&rsaquo;</button></div>';
+                h += '<div class="counts"><span class="pill good">Present ' + c.P + '</span><span class="pill warn">Late ' + c.L + '</span><span class="pill bad">Absent ' + c.A + '</span><span class="pill info">Excused ' + c.E + '</span><span class="pill">Unmarked ' + c.U + '</span></div>';
+                h += '<div class="actions" style="margin-bottom:12px">' + (attDate !== todayStr() ? '<button class="btn small" data-act="att-today">Jump to today</button>' : '') + (c.U ? '<button class="btn small" data-act="att-all">Mark unmarked as present</button>' : '') + '</div>';
+                h += '<div class="list">' + a.map(function (s) {
+                    var v = rec[s.id];
+                    function b(k, l) { return '<button class="' + k + '" data-act="att-set" data-id="' + s.id + '" data-v="' + k + '" aria-pressed="' + (v === k) + '">' + l + '</button>' }
+                    return '<div class="arow"><div class="top2">' + avatar(s) + '<span class="grow"><span class="nm">' + esc(s.name) + '</span></span></div><div class="seg" role="group" aria-label="Status for ' + esc(s.name) + '">' + b('P', 'Present') + b('L', 'Late') + b('A', 'Absent') + b('E', 'Excused') + '</div></div>'
+                }).join('') + '</div>';
+                return h;
+            }
+
+            function curAssess() {
+                if (!S.assessments.length) return null;
+                var a = S.assessments.find(function (x) { return x.id === gradeId });
+                if (!a) { a = S.assessments.slice().sort(function (x, y) { return (y.date || '').localeCompare(x.date || '') })[0]; gradeId = a.id }
+                return a;
+            }
+            function gradeSummary(A) {
+                var sc = S.scores[A.id] || {}, vals = act().map(function (s) { return sc[s.id] }).filter(function (v) { return typeof v === 'number' });
+                if (!vals.length) return '<div class="tiles"><div class="tile"><b>0/' + act().length + '</b><span>Scores entered</span></div></div>';
+                var avg = vals.reduce(function (x, y) { return x + y }, 0) / vals.length;
+                var f = function (n) { return (Math.round(n * 10) / 10).toString() };
+                return '<div class="tiles"><div class="tile"><b>' + f(avg) + '</b><span>Average out of ' + A.max + '</span></div><div class="tile"><b>' + f(Math.max.apply(null, vals)) + '</b><span>Highest</span></div><div class="tile"><b>' + f(Math.min.apply(null, vals)) + '</b><span>Lowest · ' + vals.length + '/' + act().length + ' entered</span></div></div>';
+            }
+            function viewGrades() {
+                var h = '<div class="vhead"><h2>Grades</h2><button class="btn primary" data-act="new-assess">New test</button></div>';
+                var A = curAssess();
+                if (!A) return h + empty('No tests yet', 'Create a quiz, exam or assignment, then enter each classmate\'s score.', '<button class="btn primary" data-act="new-assess">New test</button>');
+                var opts = S.assessments.slice().sort(function (x, y) { return (y.date || '').localeCompare(x.date || '') }).map(function (x) { return '<option value="' + x.id + '"' + (x.id === A.id ? ' selected' : '') + '>' + esc(x.subject ? x.subject + ': ' : '') + esc(x.title) + '</option>' }).join('');
+                h += '<div class="field"><label for="g-sel">Test</label><select id="g-sel">' + opts + '</select></div>';
+                h += '<div class="actions" style="margin-bottom:12px"><span class="pill">' + esc(fmtDate(A.date)) + '</span><span class="pill">Out of ' + A.max + '</span><button class="btn small" data-act="edit-assess" data-id="' + A.id + '">Edit test</button></div>';
+                h += '<div id="gsum">' + gradeSummary(A) + '</div>';
+                var sc = S.scores[A.id] || {}, a = act().sort(byName);
+                if (!a.length) return h + '<p class="muted" style="margin-top:14px">Add classmates to enter scores.</p>';
+                h += '<div class="list" style="margin-top:14px">' + a.map(function (s) {
+                    var v = sc[s.id];
+                    return '<div class="row">' + avatar(s) + '<span class="grow"><span class="nm">' + esc(s.name) + '</span><span class="sub" id="pp-' + s.id + '">' + (typeof v === 'number' ? Math.round(v / A.max * 100) + '%' : '') + '</span></span><span class="score"><input type="text" inputmode="decimal" data-score="' + s.id + '" aria-label="Score for ' + esc(s.name) + '" value="' + (typeof v === 'number' ? v : '') + '"' + (ro ? ' disabled' : '') + '><span>/ ' + A.max + '</span></span></div>'
+                }).join('') + '</div>';
+                return h;
+            }
+
+            function viewGroups() {
+                var h = '<div class="vhead"><h2>Groups</h2><div class="actions"><button class="btn" data-act="random-teams">Random teams</button><button class="btn primary" data-act="new-group">New group</button></div></div>';
+                if (!S.groups.length && !S.students.length) return h + empty('Nothing to group yet', 'Add classmates first. Then make study groups, or let the app split the class into random teams.', '<button class="btn primary" data-act="new-student">Add classmate</button>');
+                if (!S.groups.length) h += '<p class="muted" style="margin-bottom:14px">No groups yet. Make one by hand, or split the class into random teams.</p>';
+                S.groups.forEach(function (g) {
+                    var m = act().filter(function (s) { return s.groupId === g.id }).sort(byName);
+                    h += '<section class="list" style="margin-bottom:14px"><div class="ghead"><span class="av" style="--h:' + hue(g.name) + '" aria-hidden="true">' + initials(g.name) + '</span><span class="grow"><span class="nm">' + esc(g.name) + '</span><span class="sub">' + m.length + ' ' + (m.length === 1 ? 'member' : 'members') + '</span></span><button class="btn small" data-act="edit-group" data-id="' + g.id + '">Edit</button></div>'
+                        + (m.length ? '<div class="members">' + m.map(function (s) { return '<span class="pill">' + esc(s.name) + '</span>' }).join('') + '</div>' : '') + '</section>';
+                });
+                var un = act().filter(function (s) { return !grp(s.groupId) }).sort(byName);
+                if (un.length && S.groups.length) h += '<section class="list"><div class="ghead"><span class="grow"><span class="nm">No group</span><span class="sub">' + un.length + ' classmates</span></span></div><div class="members">' + un.map(function (s) { return '<span class="pill">' + esc(s.name) + '</span>' }).join('') + '</div></section>';
+                return h;
+            }
+
+            var TYPE = { Exam: 'warn', Assignment: 'info', Event: '', Holiday: 'good' };
+            function rel(d) { var n = diffDays(d, todayStr()); return n === 0 ? 'Today' : n === 1 ? 'Tomorrow' : n === -1 ? 'Yesterday' : n > 1 ? 'In ' + n + ' days' : Math.abs(n) + ' days ago' }
+            function eventRow(e) {
+                var d = parseYmd(e.date), today = e.date === todayStr();
+                return '<div class="row' + (e.done ? ' done' : '') + '"><span class="dt' + (today ? ' today' : '') + '"><b>' + d.getDate() + '</b><span>' + d.toLocaleDateString(undefined, { month: 'short' }) + '</span></span>'
+                    + '<button class="grow" style="background:none;border:0;padding:0;text-align:left" data-act="edit-event" data-id="' + e.id + '"><span class="nm">' + esc(e.title) + '</span><span class="sub">' + esc(rel(e.date)) + (e.time ? ' · ' + esc(e.time) : '') + (e.note ? ' · ' + esc(e.note) : '') + '</span></button>'
+                    + '<span class="pill ' + (TYPE[e.type] || '') + '">' + esc(e.type || 'Event') + '</span>'
+                    + '<button class="tick" data-act="toggle-event" data-id="' + e.id + '" aria-label="' + (e.done ? 'Mark not done' : 'Mark done') + ': ' + esc(e.title) + '" aria-pressed="' + !!e.done + '"><svg viewBox="0 0 24 24" aria-hidden="true">' + (e.done ? '<path d="M5 12.5l4.5 4.5L19 7.5"/>' : '<circle cx="12" cy="12" r="7"/>') + '</svg></button></div>';
+            }
+            function viewEvents() {
+                var h = '<div class="vhead"><h2>Events</h2><button class="btn primary" data-act="new-event">Add</button></div>';
+                if (!S.events.length) return h + empty('No events yet', 'Keep exams, assignment deadlines, trips and holidays in one place.', '<button class="btn primary" data-act="new-event">Add event</button>');
+                var td = todayStr(), up = S.events.filter(function (e) { return e.date >= td }).sort(function (x, y) { return x.date.localeCompare(y.date) });
+                var past = S.events.filter(function (e) { return e.date < td }).sort(function (x, y) { return y.date.localeCompare(x.date) }).slice(0, 8);
+                h += '<section><div class="sec-h"><h3>Upcoming</h3></div>' + (up.length ? '<div class="list">' + up.map(eventRow).join('') + '</div>' : '<p class="muted">Nothing coming up.</p>') + '</section>';
+                if (past.length) h += '<section class="sec"><div class="sec-h"><h3>Earlier</h3></div><div class="list">' + past.map(eventRow).join('') + '</div></section>';
+                return h;
+            }
+
+            var VIEWS = { home: viewHome, students: viewStudents, attendance: viewAttendance, grades: viewGrades, groups: viewGroups, events: viewEvents };
+            function route() { var h = (location.hash || '#home').slice(1); return VIEWS[h] ? h : 'home' }
+            function render() { var r = route(); $('#view').innerHTML = VIEWS[r](); renderTabs(r); $('#cname').textContent = S.className || 'My class'; setStatus(status) }
+
+            /* ---------- sheets ---------- */
+            function sheetStudent(id) {
+                var s = id ? stu(id) : { name: '', sid: nextSid(), phone: '', email: '', birthday: '', groupId: '', note: '', active: true };
+                if (!s) return;
+                var stats = '';
+                if (id) { var r = attRate(id), v = avgOf(id); stats = '<div class="statline">' + (r != null ? '<span class="pill ' + tone(r) + '">Attendance ' + r + '%</span>' : '<span class="pill">No attendance yet</span>') + (v != null ? '<span class="pill ' + tone(v) + '">Average ' + Math.round(v) + '%</span>' : '<span class="pill">No grades yet</span>') + '</div>' }
+                var gopts = '<option value="">No group</option>' + S.groups.map(function (g) { return '<option value="' + g.id + '"' + (g.id === s.groupId ? ' selected' : '') + '>' + esc(g.name) + '</option>' }).join('');
+                openSheet('<h2 id="sheet-title">' + (id ? 'Edit classmate' : 'New classmate') + '</h2>' + stats
+                    + '<form id="f-student" data-id="' + (id || '') + '" autocomplete="off">'
+                    + '<div class="field"><label for="f-name">Full name</label><input id="f-name" required value="' + esc(s.name) + '"></div>'
+                    + '<div class="two"><div class="field"><label for="f-sid">Student ID</label><input id="f-sid" value="' + esc(s.sid || '') + '"></div><div class="field"><label for="f-bd">Birthday</label><input id="f-bd" type="date" value="' + esc(s.birthday || '') + '"></div></div>'
+                    + '<div class="two"><div class="field"><label for="f-phone">Phone</label><input id="f-phone" type="tel" inputmode="tel" value="' + esc(s.phone || '') + '"></div><div class="field"><label for="f-group">Group</label><select id="f-group">' + gopts + '</select></div></div>'
+                    + '<div class="field"><label for="f-email">Email</label><input id="f-email" type="email" inputmode="email" value="' + esc(s.email || '') + '"></div>'
+                    + '<div class="field"><label for="f-note">Notes</label><textarea id="f-note">' + esc(s.note || '') + '</textarea></div>'
+                    + '<label class="check" style="border:1px solid var(--line);border-radius:10px;margin-bottom:14px"><input type="checkbox" id="f-active"' + (s.active !== false ? ' checked' : '') + '> Currently enrolled</label>'
+                    + '<div class="actions"><button class="btn primary grow-btn" type="submit">Save</button><button class="btn" type="button" data-act="close-sheet">Cancel</button>' + (id ? '<button class="btn danger" type="button" data-act="del-student" data-id="' + id + '">Delete</button>' : '') + '</div></form>');
+            }
+            function sheetAssess(id) {
+                var a = id ? S.assessments.find(function (x) { return x.id === id }) : { subject: '', title: '', max: 20, date: todayStr() };
+                if (!a) return;
+                var subs = []; S.assessments.forEach(function (x) { if (x.subject && subs.indexOf(x.subject) < 0) subs.push(x.subject) });
+                openSheet('<h2 id="sheet-title">' + (id ? 'Edit test' : 'New test') + '</h2><form id="f-assess" data-id="' + (id || '') + '" autocomplete="off">'
+                    + '<div class="field"><label for="a-sub">Subject</label><input id="a-sub" list="a-subs" placeholder="Math, English, Science" value="' + esc(a.subject || '') + '"><datalist id="a-subs">' + subs.map(function (x) { return '<option value="' + esc(x) + '">' }).join('') + '</datalist></div>'
+                    + '<div class="field"><label for="a-title">Title</label><input id="a-title" required placeholder="Quiz 1, Midterm" value="' + esc(a.title || '') + '"></div>'
+                    + '<div class="two"><div class="field"><label for="a-max">Out of</label><input id="a-max" type="number" min="1" step="any" inputmode="decimal" required value="' + a.max + '"></div><div class="field"><label for="a-date">Date</label><input id="a-date" type="date" required value="' + esc(a.date || todayStr()) + '"></div></div>'
+                    + '<div class="actions"><button class="btn primary grow-btn" type="submit">Save</button><button class="btn" type="button" data-act="close-sheet">Cancel</button>' + (id ? '<button class="btn danger" type="button" data-act="del-assess" data-id="' + id + '">Delete</button>' : '') + '</div></form>');
+            }
+            function sheetGroup(id) {
+                var g = id ? grp(id) : { name: '' }; if (!g) return;
+                var list = act().sort(byName);
+                openSheet('<h2 id="sheet-title">' + (id ? 'Edit group' : 'New group') + '</h2><form id="f-group-form" data-id="' + (id || '') + '" autocomplete="off">'
+                    + '<div class="field"><label for="g-name">Group name</label><input id="g-name" required placeholder="Team Angkor" value="' + esc(g.name) + '"></div>'
+                    + '<div class="field"><span class="lbl">Members</span><div class="list">' + (list.length ? list.map(function (s) { var other = s.groupId && s.groupId !== id && grp(s.groupId); return '<label class="check"><input type="checkbox" name="m" value="' + s.id + '"' + (id && s.groupId === id ? ' checked' : '') + '><span class="grow">' + esc(s.name) + (other ? '<span class="sub">Now in ' + esc(other.name) + '</span>' : '') + '</span></label>' }).join('') : '<div class="row"><span class="muted">Add classmates first.</span></div>') + '</div></div>'
+                    + '<div class="actions"><button class="btn primary grow-btn" type="submit">Save</button><button class="btn" type="button" data-act="close-sheet">Cancel</button>' + (id ? '<button class="btn danger" type="button" data-act="del-group" data-id="' + id + '">Delete</button>' : '') + '</div></form>');
+            }
+            function sheetTeams() {
+                var n = act().length;
+                if (n < 2) { toast('Add at least two classmates first.'); return }
+                openSheet('<h2 id="sheet-title">Random teams</h2><form id="f-teams"><p class="muted" style="margin-bottom:12px">Splits all ' + n + ' enrolled classmates evenly into new teams. Your current groups will be replaced.</p>'
+                    + '<div class="field"><label for="t-n">Number of teams</label><input id="t-n" type="number" min="2" max="' + Math.min(12, n) + '" value="' + Math.min(3, n) + '" inputmode="numeric" required></div>'
+                    + '<div class="actions"><button class="btn primary grow-btn" type="submit">Make teams</button><button class="btn" type="button" data-act="close-sheet">Cancel</button></div></form>');
+            }
+            function sheetEvent(id) {
+                var e = id ? S.events.find(function (x) { return x.id === id }) : { title: '', type: 'Exam', date: todayStr(), time: '', note: '' }; if (!e) return;
+                openSheet('<h2 id="sheet-title">' + (id ? 'Edit event' : 'New event') + '</h2><form id="f-event" data-id="' + (id || '') + '" autocomplete="off">'
+                    + '<div class="field"><label for="e-title">Title</label><input id="e-title" required placeholder="Math midterm" value="' + esc(e.title) + '"></div>'
+                    + '<div class="two"><div class="field"><label for="e-type">Type</label><select id="e-type">' + Object.keys(TYPE).map(function (t) { return '<option' + (t === e.type ? ' selected' : '') + '>' + t + '</option>' }).join('') + '</select></div><div class="field"><label for="e-date">Date</label><input id="e-date" type="date" required value="' + esc(e.date) + '"></div></div>'
+                    + '<div class="two"><div class="field"><label for="e-time">Time (optional)</label><input id="e-time" type="time" value="' + esc(e.time || '') + '"></div><div class="field"><label for="e-note">Note (optional)</label><input id="e-note" value="' + esc(e.note || '') + '"></div></div>'
+                    + '<div class="actions"><button class="btn primary grow-btn" type="submit">Save</button><button class="btn" type="button" data-act="close-sheet">Cancel</button>' + (id ? '<button class="btn danger" type="button" data-act="del-event" data-id="' + id + '">Delete</button>' : '') + '</div></form>');
+            }
+            function sheetRename() { openSheet('<h2 id="sheet-title">Class name</h2><form id="f-rename" autocomplete="off"><div class="field"><label for="c-name">Name</label><input id="c-name" required value="' + esc(S.className || '') + '"></div><div class="actions"><button class="btn primary grow-btn" type="submit">Save</button><button class="btn" type="button" data-act="close-sheet">Cancel</button></div></form>') }
+
+            /* ---------- sample + export ---------- */
+            function makeSample() {
+                var seed = 7, rnd = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647 };
+                var names = ['Sokha Chea', 'Dara Lim', 'Sreyneath Kong', 'Vannak Heng', 'Chantha Sok', 'Rithy Meas', 'Bopha Ly', 'Pich Vong'];
+                var y = new Date().getFullYear(), mo = pad(new Date().getMonth() + 1);
+                var g1 = uid(), g2 = uid(), d = blank();
+                d.className = 'Grade 10B'; d.sample = true;
+                d.groups = [{ id: g1, name: 'Team Angkor' }, { id: g2, name: 'Team Mekong' }];
+                d.students = names.map(function (n, i) { return { id: uid(), name: n, sid: y + '-' + String(i + 1).padStart(3, '0'), phone: '', email: '', birthday: (y - 16) + '-' + (i === 2 ? mo : pad(1 + (i * 3) % 12)) + '-' + pad(5 + i * 3), groupId: i % 2 ? g2 : g1, note: '', active: true } });
+                var t = todayStr(), days = [], k = 1;
+                while (days.length < 5) { var dd = addDays(t, -k); var wd = parseYmd(dd).getDay(); if (wd !== 0 && wd !== 6) days.push(dd); k++ }
+                days.forEach(function (dd) { d.attendance[dd] = {}; d.students.forEach(function (s, i) { var r = rnd(); d.attendance[dd][s.id] = (i === 5 && r < .6) ? 'A' : r < .07 ? 'A' : r < .16 ? 'L' : r < .2 ? 'E' : 'P' }) });
+                var A = [['Math', 'Quiz 1', 20, -12], ['English', 'Essay', 50, -8], ['Science', 'Lab report', 30, -4]];
+                A.forEach(function (x) { var id = uid(); d.assessments.push({ id: id, subject: x[0], title: x[1], max: x[2], date: addDays(t, x[3]) }); d.scores[id] = {}; d.students.forEach(function (s, i) { var base = i === 5 ? .42 : .6 + rnd() * .35; d.scores[id][s.id] = Math.round(x[2] * base * 2) / 2 }) });
+                d.events = [{ id: uid(), title: 'Math midterm', type: 'Exam', date: addDays(t, 3), time: '08:00', note: 'Chapters 1 to 4', done: false }, { id: uid(), title: 'Science project due', type: 'Assignment', date: addDays(t, 7), time: '', note: '', done: false }, { id: uid(), title: 'Class trip', type: 'Event', date: addDays(t, 14), time: '', note: '', done: false }];
+                return d;
+            }
+            var csvCell = function (c) { c = String(c == null ? '' : c); if (/^[=+@]/.test(c)) c = "'" + c; return /[",\n]/.test(c) ? '"' + c.replace(/"/g, '""') + '"' : c };
+            var csv = function (rows) { return '﻿' + rows.map(function (r) { return r.map(csvCell).join(',') }).join('\n') };
+            async function doExport(k) {
+                var rows, name;
+                if (k === 'students') { name = 'classmates.csv'; rows = [['Name', 'Student ID', 'Group', 'Phone', 'Email', 'Birthday', 'Enrolled', 'Attendance %', 'Average %']].concat(S.students.slice().sort(byName).map(function (s) { var g = grp(s.groupId), r = attRate(s.id), v = avgOf(s.id); return [s.name, s.sid, g ? g.name : '', s.phone, s.email, s.birthday, s.active === false ? 'No' : 'Yes', r == null ? '' : r, v == null ? '' : Math.round(v)] })) }
+                else if (k === 'attendance') { name = 'attendance.csv'; var L = { P: 'Present', L: 'Late', A: 'Absent', E: 'Excused' }; rows = [['Date', 'Name', 'Status']]; Object.keys(S.attendance).sort().forEach(function (d) { S.students.slice().sort(byName).forEach(function (s) { var v = S.attendance[d][s.id]; if (v) rows.push([d, s.name, L[v]]) }) }) }
+                else { name = 'grades.csv'; var as = S.assessments.slice().sort(function (x, y) { return (x.date || '').localeCompare(y.date || '') }); rows = [['Name'].concat(as.map(function (a) { return (a.subject ? a.subject + ' ' : '') + a.title + ' (/' + a.max + ')' })).concat(['Average %'])].concat(S.students.slice().sort(byName).map(function (s) { var v = avgOf(s.id); return [s.name].concat(as.map(function (a) { var x = (S.scores[a.id] || {})[s.id]; return typeof x === 'number' ? x : '' })).concat([v == null ? '' : Math.round(v)]) })) }
+                try { await dl.save({ filename: name, data: csv(rows) }); toast('File ready') } catch (e) { if (!e || e.code !== 'declined') toast('Could not save the file here.') }
+            }
+
+            /* ---------- events ---------- */
+            var armed = null;
+            function arm(btn, label) { if (armed === btn.dataset.act + btn.dataset.id) return true; armed = btn.dataset.act + btn.dataset.id; btn.classList.add('armed'); btn.textContent = label; return false }
+            document.addEventListener('click', function (ev) {
+                var el = ev.target.closest('[data-act]'); if (!el) return;
+                var a = el.dataset.act, id = el.dataset.id;
+                if (a !== 'del-student' && a !== 'del-assess' && a !== 'del-group' && a !== 'del-event') armed = null;
+                switch (a) {
+                    case 'close-sheet': closeSheet(); break;
+                    case 'rename-class': sheetRename(); break;
+                    case 'retry-save': if (status === 'error') { dirty = true; flush() } break;
+                    case 'new-student': sheetStudent(); break;
+                    case 'open-student': sheetStudent(id); break;
+                    case 'filter-group': gf = id; render(); break;
+                    case 'att-day': attDate = addDays(attDate, Number(el.dataset.d)); render(); break;
+                    case 'att-today': attDate = todayStr(); render(); break;
+                    case 'att-set': if (mutate(function () { var r = S.attendance[attDate] = S.attendance[attDate] || {}; if (r[id] === el.dataset.v) delete r[id]; else r[id] = el.dataset.v; if (!Object.keys(r).length) delete S.attendance[attDate] })) render(); break;
+                    case 'att-all': if (mutate(function () { var r = S.attendance[attDate] = S.attendance[attDate] || {}; act().forEach(function (s) { if (!r[s.id]) r[s.id] = 'P' }) })) render(); break;
+                    case 'new-assess': sheetAssess(); break;
+                    case 'edit-assess': sheetAssess(id); break;
+                    case 'new-group': sheetGroup(); break;
+                    case 'edit-group': sheetGroup(id); break;
+                    case 'random-teams': sheetTeams(); break;
+                    case 'new-event': sheetEvent(); break;
+                    case 'edit-event': sheetEvent(id); break;
+                    case 'toggle-event': if (mutate(function () { var e = S.events.find(function (x) { return x.id === id }); if (e) e.done = !e.done })) render(); break;
+                    case 'export': doExport(el.dataset.k); break;
+                    case 'load-sample': if (mutate(function () { S = makeSample() })) { gradeId = ''; gf = 'all'; render(); toast('Sample class loaded') } break;
+                    case 'clear-sample': if (mutate(function () { S = blank() })) { gradeId = ''; render() } break;
+                    case 'del-student': if (!arm(el, 'Tap again to delete')) break; if (mutate(function () { S.students = S.students.filter(function (s) { return s.id !== id }); for (var d in S.attendance) { delete S.attendance[d][id]; if (!Object.keys(S.attendance[d]).length) delete S.attendance[d] } for (var k in S.scores) delete S.scores[k][id] })) { closeSheet(); render() } break;
+                    case 'del-assess': if (!arm(el, 'Tap again to delete')) break; if (mutate(function () { S.assessments = S.assessments.filter(function (x) { return x.id !== id }); delete S.scores[id] })) { gradeId = ''; closeSheet(); render() } break;
+                    case 'del-group': if (!arm(el, 'Tap again to delete')) break; if (mutate(function () { S.groups = S.groups.filter(function (g) { return g.id !== id }); S.students.forEach(function (s) { if (s.groupId === id) s.groupId = '' }) })) { if (gf === id) gf = 'all'; closeSheet(); render() } break;
+                    case 'del-event': if (!arm(el, 'Tap again to delete')) break; if (mutate(function () { S.events = S.events.filter(function (x) { return x.id !== id }) })) { closeSheet(); render() } break;
+                }
+            });
+            document.addEventListener('submit', function (ev) {
+                var f = ev.target; ev.preventDefault(); var id = f.dataset.id || '', v = function (i) { return (f.querySelector('#' + i) || {}).value || '' };
+                if (f.id === 'f-student') {
+                    var name = v('f-name').trim(); if (!name) { f.querySelector('#f-name').setAttribute('aria-invalid', 'true'); return }
+                    if (mutate(function () {
+                        var o = { name: name, sid: v('f-sid').trim(), birthday: v('f-bd'), phone: v('f-phone').trim(), email: v('f-email').trim(), groupId: v('f-group'), note: v('f-note').trim(), active: f.querySelector('#f-active').checked };
+                        if (id) { Object.assign(stu(id), o) } else { o.id = uid(); S.students.push(o) }
+                    })) { closeSheet(); render(); toast('Saved') }
+                } else if (f.id === 'f-assess') {
+                    var max = parseFloat(v('a-max')), title = v('a-title').trim(); if (!title || !(max > 0)) return;
+                    if (mutate(function () { var o = { subject: v('a-sub').trim(), title: title, max: max, date: v('a-date') }; if (id) { Object.assign(S.assessments.find(function (x) { return x.id === id }), o) } else { o.id = uid(); S.assessments.push(o); gradeId = o.id } })) { closeSheet(); render(); toast('Saved') }
+                } else if (f.id === 'f-group-form') {
+                    var gn = v('g-name').trim(); if (!gn) return;
+                    var picked = Array.from(f.querySelectorAll('input[name=m]:checked')).map(function (i) { return i.value });
+                    if (mutate(function () {
+                        var g; if (id) { g = grp(id); g.name = gn } else { g = { id: uid(), name: gn }; S.groups.push(g) }
+                        S.students.forEach(function (s) { if (picked.indexOf(s.id) > -1) s.groupId = g.id; else if (s.groupId === g.id) s.groupId = '' })
+                    })) { closeSheet(); render(); toast('Saved') }
+                } else if (f.id === 'f-teams') {
+                    var n = parseInt(v('t-n'), 10), pool = act(); if (!(n >= 2) || n > pool.length) return;
+                    if (mutate(function () {
+                        var l = pool.slice(); for (var i = l.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = l[i]; l[i] = l[j]; l[j] = t }
+                        S.groups = []; for (var k = 1; k <= n; k++)S.groups.push({ id: uid(), name: 'Team ' + k });
+                        S.students.forEach(function (s) { s.groupId = '' }); l.forEach(function (s, i) { s.groupId = S.groups[i % n].id })
+                    })) { gf = 'all'; closeSheet(); render(); toast(n + ' teams made') }
+                } else if (f.id === 'f-event') {
+                    var t2 = v('e-title').trim(); if (!t2) return;
+                    if (mutate(function () { var o = { title: t2, type: v('e-type'), date: v('e-date'), time: v('e-time'), note: v('e-note').trim() }; if (id) { Object.assign(S.events.find(function (x) { return x.id === id }), o) } else { o.id = uid(); o.done = false; S.events.push(o) } })) { closeSheet(); render(); toast('Saved') }
+                } else if (f.id === 'f-rename') {
+                    var cn = v('c-name').trim(); if (!cn) return;
+                    if (mutate(function () { S.className = cn })) { closeSheet(); render() }
+                }
+            });
+            document.addEventListener('input', function (ev) {
+                var t = ev.target;
+                if (t.id === 'q') { q = t.value; var l = $('#slist'); if (l) l.innerHTML = studentRows() }
+                else if (t.dataset && t.dataset.score) {
+                    var A = curAssess(); if (!A || ro) return; var sid = t.dataset.score, raw = t.value.trim().replace(',', '.'), pp = $('#pp-' + sid);
+                    if (raw === '') { t.removeAttribute('aria-invalid'); if (S.scores[A.id] && sid in S.scores[A.id]) { delete S.scores[A.id][sid]; touch() } if (pp) pp.textContent = ''; $('#gsum').innerHTML = gradeSummary(A); return }
+                    var n = Number(raw); if (!isFinite(n) || n < 0 || n > A.max) { t.setAttribute('aria-invalid', 'true'); if (pp) pp.textContent = 'Enter 0 to ' + A.max; return }
+                    t.removeAttribute('aria-invalid'); (S.scores[A.id] = S.scores[A.id] || {})[sid] = n; touch(); if (pp) pp.textContent = Math.round(n / A.max * 100) + '%'; $('#gsum').innerHTML = gradeSummary(A);
+                }
+            });
+            document.addEventListener('change', function (ev) {
+                var t = ev.target;
+                if (t.id === 'g-sel') { gradeId = t.value; render() }
+                else if (t.id === 'att-date' && /^\d{4}-\d{2}-\d{2}$/.test(t.value)) { attDate = t.value; render() }
+            });
+            document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && !$('#sheet').hidden) closeSheet() });
+            window.addEventListener('hashchange', function () { render(); window.scrollTo(0, 0) });
+
+            boot();
+        })();
+    </script>
+</body>
+
+</html>
